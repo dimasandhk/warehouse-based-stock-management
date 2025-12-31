@@ -4,6 +4,7 @@ import express from "express";
 
 // Routes
 import sparepartsRoute from "./spareparts/spareparts.route"
+import warehousesRoute from "./warehouse/warehouses.route"
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
 app.use(express.json());
 
 app.use("/api/sparepart", sparepartsRoute);
+app.use("/api/warehouse", warehousesRoute);
 
 app.get("/", (_req, res) => {
   res.status(200).send("OK");
