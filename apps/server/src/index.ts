@@ -2,6 +2,9 @@ import { env } from "@warehouse-based-stock-management-oppo-technical-test/env/s
 import cors from "cors";
 import express from "express";
 
+// Routes
+import sparepartsRoute from "./spareparts/spareparts.route"
+
 const app = express();
 
 app.use(
@@ -13,7 +16,13 @@ app.use(
 
 app.use(express.json());
 
+app.use("/api/sparepart", sparepartsRoute);
+
 app.get("/", (_req, res) => {
+  res.status(200).send("OK");
+});
+
+app.get("/health", (_req, res) => {
   res.status(200).send("OK");
 });
 
