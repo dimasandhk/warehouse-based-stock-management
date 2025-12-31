@@ -1,0 +1,3 @@
+{
+  "extends": "@warehouse-based-stock-management-oppo-technical-test/config/tsconfig.base.json"
+}

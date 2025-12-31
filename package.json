@@ -1,0 +1,37 @@
+{
+  "name": "warehouse-based-stock-management-oppo-technical-test",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:native": "turbo -F native dev",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:push",
+    "db:studio": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:studio",
+    "db:generate": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:generate",
+    "db:migrate": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:migrate",
+    "db:start": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:start",
+    "db:watch": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:watch",
+    "db:stop": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:stop",
+    "db:down": "turbo -F @warehouse-based-stock-management-oppo-technical-test/db db:down"
+  },
+  "dependencies": {
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@warehouse-based-stock-management-oppo-technical-test/env": "workspace:*"
+  },
+  "devDependencies": {
+    "turbo": "^2.6.3",
+    "typescript": "catalog:",
+    "@types/node": "^22.13.14",
+    "@warehouse-based-stock-management-oppo-technical-test/config": "workspace:*"
+  },
+  "packageManager": "pnpm@9.12.2"
+}

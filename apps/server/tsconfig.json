@@ -1,0 +1,12 @@
+{
+  "extends": "@warehouse-based-stock-management-oppo-technical-test/config/tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx"
+  }
+}
