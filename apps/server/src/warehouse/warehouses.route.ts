@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type { Router as RouterType } from "express";
-import { db } from "@warehouse-based-stock-management-oppo-technical-test/db";
+import { db, ilike } from "@warehouse-based-stock-management-oppo-technical-test/db";
 import { warehouses } from "@warehouse-based-stock-management-oppo-technical-test/db/schema/index";
 
 export const router: RouterType = Router();
@@ -35,6 +35,22 @@ router.get('/', async (req, res) => {
     const result = await db.select().from(warehouses).limit(Number(limit)).offset(offset);
     return res.status(200).json({
       message: "Warehouses fetched successfully",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error", success: false });
+  }
+})
+
+// search warehouse (paginated)
+router.get('/search', async (req, res) => {
+  try {
+    const { name, page = 1, limit = 10 } = req.query;
+    const offset = (Number(page) - 1) * Number(limit);
+    const result = await db.select().from(warehouses).where(ilike(warehouses.name, `%${name}%`)).limit(Number(limit)).offset(offset);
+
+    return res.status(200).json({
+      message: "Warehouse fetched successfully",
       result,
     });
   } catch (error) {
