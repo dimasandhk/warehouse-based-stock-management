@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
-import { db, eq, and, sql } from "@warehouse-based-stock-management-oppo-technical-test/db";
+import { db, eq, and, sql, desc, gte, lte } from "@warehouse-based-stock-management-oppo-technical-test/db";
 import { 
   warehouses, 
   spareparts, 
   warehouseStocks, 
-  stockTransactions 
+  stockTransactions,
+  transactionDetailsView
 } from "@warehouse-based-stock-management-oppo-technical-test/db/schema/index";
 
 export const handleStockIn = async (req: Request, res: Response) => {
@@ -255,5 +256,145 @@ export const handleStockOut = async (req: Request, res: Response) => {
       error: "Internal server error",
       success: false 
     });
+  }
+};
+
+// GET /api/stock/transactions
+export const getTransactionHistory = async (req: Request, res: Response) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 10, 
+      type, 
+      warehouseId, 
+      sparepartId, 
+      startDate, 
+      endDate 
+    } = req.query;
+    const offset = (Number(page) - 1) * Number(limit);
+
+    const conditions = [];
+    
+    if (type && typeof type === 'string' && (type === 'IN' || type === 'OUT')) {
+      conditions.push(eq(transactionDetailsView.type, type));
+    }
+    if (warehouseId && typeof warehouseId === 'string') {
+      conditions.push(eq(transactionDetailsView.warehouseId, warehouseId));
+    }
+    if (sparepartId && typeof sparepartId === 'string') {
+      conditions.push(eq(transactionDetailsView.sparepartId, sparepartId));
+    }
+    if (startDate && typeof startDate === 'string') {
+      conditions.push(gte(transactionDetailsView.createdAt, startDate));
+    }
+    if (endDate && typeof endDate === 'string') {
+      conditions.push(lte(transactionDetailsView.createdAt, endDate));
+    }
+
+    const whereClause = conditions.length > 0 
+      ? and(...conditions)
+      : undefined;
+
+    const result = await db
+      .select()
+      .from(transactionDetailsView)
+      .where(whereClause)
+      .orderBy(desc(transactionDetailsView.createdAt))
+      .limit(Number(limit))
+      .offset(offset);
+
+    // total count with same filters
+    const countConditions = [];
+    if (type && typeof type === 'string' && (type === 'IN' || type === 'OUT')) {
+      countConditions.push(eq(stockTransactions.type, type));
+    }
+    if (warehouseId && typeof warehouseId === 'string') {
+      countConditions.push(eq(stockTransactions.warehouseId, warehouseId));
+    }
+    if (sparepartId && typeof sparepartId === 'string') {
+      countConditions.push(eq(stockTransactions.sparepartId, sparepartId));
+    }
+    if (startDate && typeof startDate === 'string') {
+      countConditions.push(gte(stockTransactions.createdAt, startDate));
+    }
+    if (endDate && typeof endDate === 'string') {
+      countConditions.push(lte(stockTransactions.createdAt, endDate));
+    }
+
+    const countWhereClause = countConditions.length > 0 
+      ? and(...countConditions)
+      : undefined;
+
+    const countResult = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(stockTransactions)
+      .where(countWhereClause);
+
+    return res.status(200).json({
+      success: true,
+      result,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total: Number(countResult[0]?.count || 0)
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error", success: false });
+  }
+};
+
+// GET /api/stock/transactions/summary
+export const getTransactionSummary = async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate, warehouseId } = req.query;
+
+    const conditions = [];
+    if (startDate && typeof startDate === 'string') {
+      conditions.push(gte(stockTransactions.createdAt, startDate));
+    }
+    if (endDate && typeof endDate === 'string') {
+      conditions.push(lte(stockTransactions.createdAt, endDate));
+    }
+    if (warehouseId && typeof warehouseId === 'string') {
+      conditions.push(eq(stockTransactions.warehouseId, warehouseId));
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+    const summaryResult = await db
+      .select({
+        type: stockTransactions.type,
+        totalQuantity: sql<number>`SUM(${stockTransactions.quantity})`,
+        count: sql<number>`COUNT(*)`
+      })
+      .from(stockTransactions)
+      .where(whereClause)
+      .groupBy(stockTransactions.type);
+
+    const inData = summaryResult.find(s => s.type === 'IN');
+    const outData = summaryResult.find(s => s.type === 'OUT');
+
+    const totalIn = Number(inData?.totalQuantity || 0);
+    const totalOut = Number(outData?.totalQuantity || 0);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        period: {
+          start: startDate || null,
+          end: endDate || null
+        },
+        totalIn,
+        totalOut,
+        netChange: totalIn - totalOut,
+        transactionCount: {
+          in: Number(inData?.count || 0),
+          out: Number(outData?.count || 0)
+        }
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error", success: false });
   }
 };
