@@ -4,3 +4,5 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "./schema";
 
 export const db = drizzle(env.DATABASE_URL, { schema });
+
+export { eq, and, or, sql, desc, asc, like, ilike, gt, gte, lt, lte, ne, inArray, notInArray, isNull, isNotNull } from "drizzle-orm";
