@@ -15,6 +15,20 @@
       "when": 1767194578933,
       "tag": "0001_great_mach_iv",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767276757694,
+      "tag": "0002_amazing_synch",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767278109387,
+      "tag": "0003_heavy_firebird",
+      "breakpoints": true
     }
   ]
 }

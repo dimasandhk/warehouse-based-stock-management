@@ -1,0 +1,541 @@
+{
+  "id": "548c78ef-9fdc-4bc7-95a8-c3a5139ad012",
+  "prevId": "04a60771-2308-493d-9d28-9d4f3cd5fc5b",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.spareparts": {
+      "name": "spareparts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sku": {
+          "name": "sku",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "spareparts_pkey": {
+          "name": "spareparts_pkey",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "spareparts_sku_key": {
+          "name": "spareparts_sku_key",
+          "columns": [
+            {
+              "expression": "sku",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.stock_transactions": {
+      "name": "stock_transactions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "type": {
+          "name": "type",
+          "type": "stock_transaction_types",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sparepart_id": {
+          "name": "sparepart_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "stock_transactions_pkey": {
+          "name": "stock_transactions_pkey",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.warehouse_stocks": {
+      "name": "warehouse_stocks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "current_stock": {
+          "name": "current_stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sparepart_id": {
+          "name": "sparepart_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "unique_warehouse_stock_pair": {
+          "name": "unique_warehouse_stock_pair",
+          "columns": [
+            {
+              "expression": "warehouse_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "sparepart_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "warehouse_stocks_pkey": {
+          "name": "warehouse_stocks_pkey",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.warehouses": {
+      "name": "warehouses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "warehouses_code_key": {
+          "name": "warehouses_code_key",
+          "columns": [
+            {
+              "expression": "code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "warehouses_pkey": {
+          "name": "warehouses_pkey",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.stock_transaction_types": {
+      "name": "stock_transaction_types",
+      "schema": "public",
+      "values": [
+        "IN",
+        "OUT"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "public.low_stock_alert_view": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_name": {
+          "name": "warehouse_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_code": {
+          "name": "warehouse_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_id": {
+          "name": "sparepart_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_name": {
+          "name": "sparepart_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_sku": {
+          "name": "sparepart_sku",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "current_stock": {
+          "name": "current_stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "definition": "\n\tSELECT \n\t\tws.id,\n\t\tws.warehouse_id,\n\t\tw.name AS warehouse_name,\n\t\tw.code AS warehouse_code,\n\t\tws.sparepart_id,\n\t\ts.name AS sparepart_name,\n\t\ts.sku AS sparepart_sku,\n\t\tws.current_stock,\n\t\tws.updated_at\n\tFROM warehouse_stocks ws\n\tINNER JOIN warehouses w ON ws.warehouse_id = w.id\n\tINNER JOIN spareparts s ON ws.sparepart_id = s.id\n\tWHERE ws.current_stock < 10\n",
+      "name": "low_stock_alert_view",
+      "schema": "public",
+      "isExisting": false,
+      "materialized": false
+    },
+    "public.transaction_details_view": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_name": {
+          "name": "warehouse_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_code": {
+          "name": "warehouse_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_id": {
+          "name": "sparepart_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_name": {
+          "name": "sparepart_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_sku": {
+          "name": "sparepart_sku",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "definition": "\n\tSELECT \n\t\tst.id,\n\t\tst.type,\n\t\tst.quantity,\n\t\tst.warehouse_id,\n\t\tw.name AS warehouse_name,\n\t\tw.code AS warehouse_code,\n\t\tst.sparepart_id,\n\t\ts.name AS sparepart_name,\n\t\ts.sku AS sparepart_sku,\n\t\tst.created_at\n\tFROM stock_transactions st\n\tINNER JOIN warehouses w ON st.warehouse_id = w.id\n\tINNER JOIN spareparts s ON st.sparepart_id = s.id\n",
+      "name": "transaction_details_view",
+      "schema": "public",
+      "isExisting": false,
+      "materialized": false
+    },
+    "public.warehouse_stock_details_view": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_name": {
+          "name": "warehouse_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "warehouse_code": {
+          "name": "warehouse_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_id": {
+          "name": "sparepart_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_name": {
+          "name": "sparepart_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sparepart_sku": {
+          "name": "sparepart_sku",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "current_stock": {
+          "name": "current_stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "definition": "\n\tSELECT \n\t\tws.id,\n\t\tws.warehouse_id,\n\t\tw.name AS warehouse_name,\n\t\tw.code AS warehouse_code,\n\t\tws.sparepart_id,\n\t\ts.name AS sparepart_name,\n\t\ts.sku AS sparepart_sku,\n\t\tws.current_stock,\n\t\tws.updated_at,\n\t\tws.created_at\n\tFROM warehouse_stocks ws\n\tINNER JOIN warehouses w ON ws.warehouse_id = w.id\n\tINNER JOIN spareparts s ON ws.sparepart_id = s.id\n",
+      "name": "warehouse_stock_details_view",
+      "schema": "public",
+      "isExisting": false,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
