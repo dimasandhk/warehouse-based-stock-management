@@ -6,6 +6,7 @@ import express from "express";
 import sparepartsRoute from "./spareparts/spareparts.route"
 import warehousesRoute from "./warehouse/warehouses.route"
 import stockTransactionsRoute from "./stock_transactions/stock_transactions.route"
+import warehouseStocksRoute from "./stock_transactions/warehouse_stocks.route"
 import dashboardRoute from "./dashboard/dashboard.route"
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api/sparepart", sparepartsRoute);
 app.use("/api/warehouse", warehousesRoute);
 app.use('/api/stock', stockTransactionsRoute);
+app.use('/api/warehouse-stocks', warehouseStocksRoute);
 app.use('/api/dashboard', dashboardRoute);
 
 app.get("/", (_req, res) => {
