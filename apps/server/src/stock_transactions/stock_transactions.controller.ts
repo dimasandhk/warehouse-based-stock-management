@@ -188,7 +188,7 @@ export const handleStockOut = async (req: Request, res: Response) => {
       const currentStock = lockedStock[0] as any;
 
       // cancel if insufficient stock
-      if (currentStock.current_stock < quantity) {
+      if (currentStock.currentStock < quantity) {
         throw new Error("INSUFFICIENT_STOCK");
       }
 
