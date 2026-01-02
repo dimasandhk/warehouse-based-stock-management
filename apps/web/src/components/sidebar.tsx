@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { Home, Warehouse, Package, Settings, Box } from "lucide-react";
+import { Home, Warehouse, Package, Settings, Box, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -28,6 +28,11 @@ const items: NavItem[] = [
     title: "Spareparts",
     url: "/spareparts" as Route,
     icon: Package,
+  },
+  {
+    title: "Transactions",
+    url: "/transactions" as Route,
+    icon: ArrowLeftRight,
   },
   {
     title: "Settings",

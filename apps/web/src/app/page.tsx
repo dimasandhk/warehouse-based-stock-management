@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Box, Cuboid, TrendingUp, AlertTriangle } from "lucide-react";
+import { Box, Cuboid, TrendingUp, AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Activity } from "lucide-react";
 import { env } from "@warehouse-based-stock-management-oppo-technical-test/env/web";
+import { StockModal } from "@/components/stock/stock-modal";
 
 async function getDashboardSummary() {
   const res = await fetch(`${env.NEXT_PUBLIC_SERVER_URL}/api/dashboard/summary`, {
@@ -18,20 +19,33 @@ async function getRecentTransactions() {
   return res.json();
 }
 
+async function getTransactionSummary() {
+  const res = await fetch(`${env.NEXT_PUBLIC_SERVER_URL}/api/stock/transactions/summary`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("Failed to fetch transaction summary");
+  return res.json();
+}
+
 export default async function Home() {
-  const [summaryData, transactionsData] = await Promise.all([
+  const [summaryData, transactionsData, transactionSummary] = await Promise.all([
     getDashboardSummary(),
     getRecentTransactions(),
+    getTransactionSummary(),
   ]);
 
   const summary = summaryData.data;
   const transactions = transactionsData.result;
+  const stockMovement = transactionSummary.data;
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-1">
-         <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Dashboard</h1>
-         <p className="text-muted-foreground">Overview of your inventory and stock performance.</p>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+         <div className="flex flex-col gap-1">
+           <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Dashboard</h1>
+           <p className="text-muted-foreground">Overview of your inventory and stock performance.</p>
+         </div>
+         <StockModal />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -56,12 +70,50 @@ export default async function Home() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4 rounded-2xl border-border/50 shadow-sm bg-card/50 backdrop-blur-sm">
             <CardHeader>
-                <CardTitle>Stock Overview</CardTitle>
-                <CardDescription>Monthly stock movement across all warehouses.</CardDescription>
+                <CardTitle>Stock Movement Summary</CardTitle>
+                <CardDescription>All-time stock in and out overview.</CardDescription>
             </CardHeader>
-            <CardContent className="pl-2">
-                <div className="h-[200px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border">
-                    Chart Placeholder
+            <CardContent>
+                <div className="grid grid-cols-3 gap-4">
+                  {/* Stock In */}
+                  <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-2 rounded-lg bg-green-500/10">
+                        <ArrowDownToLine className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="text-sm font-medium text-muted-foreground">Stock In</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">+{stockMovement.totalIn.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{stockMovement.transactionCount.in} transactions</p>
+                  </div>
+
+                  {/* Stock Out */}
+                  <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-2 rounded-lg bg-red-500/10">
+                        <ArrowUpFromLine className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="text-sm font-medium text-muted-foreground">Stock Out</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">-{stockMovement.totalOut.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{stockMovement.transactionCount.out} transactions</p>
+                  </div>
+
+                  {/* Net Change */}
+                  <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="p-2 rounded-lg bg-blue-500/10">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="text-sm font-medium text-muted-foreground">Net Change</span>
+                    </div>
+                    <p className={`text-2xl font-bold ${stockMovement.netChange >= 0 ? 'text-blue-600' : 'text-amber-600'}`}>
+                      {stockMovement.netChange >= 0 ? '+' : ''}{stockMovement.netChange.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {stockMovement.transactionCount.in + stockMovement.transactionCount.out} total
+                    </p>
+                  </div>
                 </div>
             </CardContent>
         </Card>
@@ -88,6 +140,11 @@ export default async function Home() {
                            </div>
                         </div>
                     ))}
+                    {transactions.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground text-sm">
+                        No transactions yet
+                      </div>
+                    )}
                 </div>
             </CardContent>
         </Card>
