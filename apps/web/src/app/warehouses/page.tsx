@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { Warehouse } from "lucide-react";
 import { env } from "@warehouse-based-stock-management-oppo-technical-test/env/web";
@@ -57,21 +58,23 @@ export default async function WarehousesPage({ searchParams }: PageProps) {
             
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                {warehouses.map((warehouse: any) => (
-                   <Card key={warehouse.id} className="group rounded-2xl border-border/50 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/20 bg-card/50 backdrop-blur-sm overflow-hidden">
-                       <CardHeader className="space-y-1">
-                           <div className="flex items-center justify-between">
-                               <div className="p-2 rounded-xl bg-muted/50 group-hover:bg-blue-500/10 transition-colors">
-                                   <Warehouse className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
-                               </div>
-                               <span className="text-xs font-medium px-2 py-1 rounded-full bg-muted/50 text-muted-foreground font-mono">
-                                   {warehouse.code}
-                               </span>
-                           </div>
-                           <div className="pt-2">
-                               <CardTitle className="line-clamp-1">{warehouse.name}</CardTitle>
-                           </div>
-                       </CardHeader>
-                   </Card>
+                   <Link key={warehouse.id} href={`/warehouses/${warehouse.id}`}>
+                     <Card className="group rounded-2xl border-border/50 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/20 bg-card/50 backdrop-blur-sm overflow-hidden cursor-pointer h-full">
+                         <CardHeader className="space-y-1">
+                             <div className="flex items-center justify-between">
+                                 <div className="p-2 rounded-xl bg-muted/50 group-hover:bg-blue-500/10 transition-colors">
+                                     <Warehouse className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
+                                 </div>
+                                 <span className="text-xs font-medium px-2 py-1 rounded-full bg-muted/50 text-muted-foreground font-mono">
+                                     {warehouse.code}
+                                 </span>
+                             </div>
+                             <div className="pt-2">
+                                 <CardTitle className="line-clamp-1">{warehouse.name}</CardTitle>
+                             </div>
+                         </CardHeader>
+                     </Card>
+                   </Link>
                ))}
                
                {warehouses.length === 0 && (

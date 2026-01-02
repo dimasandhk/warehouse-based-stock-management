@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { Package, Barcode } from "lucide-react";
 import { env } from "@warehouse-based-stock-management-oppo-technical-test/env/web";
@@ -57,24 +58,26 @@ export default async function SparepartsPage({ searchParams }: PageProps) {
             
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                {spareparts.map((sparepart: any) => (
-                   <Card key={sparepart.id} className="group rounded-2xl border-border/50 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/20 bg-card/50 backdrop-blur-sm overflow-hidden">
-                       <CardHeader className="space-y-1">
-                           <div className="flex items-center justify-between">
-                               <div className="p-2 rounded-xl bg-muted/50 group-hover:bg-blue-500/10 transition-colors">
-                                   <Package className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
-                               </div>
-                           </div>
-                           <div className="pt-2">
-                               <CardTitle className="line-clamp-1">{sparepart.name}</CardTitle>
-                           </div>
-                       </CardHeader>
-                       <CardContent>
-                           <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg bg-muted/30 border border-border/50">
-                               <Barcode className="h-4 w-4 shrink-0 opacity-70" />
-                               <span className="font-mono text-xs">{sparepart.sku}</span>
-                           </div>
-                       </CardContent>
-                   </Card>
+                   <Link key={sparepart.id} href={`/spareparts/${sparepart.id}`}>
+                     <Card className="group rounded-2xl border-border/50 shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary/20 bg-card/50 backdrop-blur-sm overflow-hidden cursor-pointer h-full">
+                         <CardHeader className="space-y-1">
+                             <div className="flex items-center justify-between">
+                                 <div className="p-2 rounded-xl bg-muted/50 group-hover:bg-blue-500/10 transition-colors">
+                                     <Package className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 transition-colors" />
+                                 </div>
+                             </div>
+                             <div className="pt-2">
+                                 <CardTitle className="line-clamp-1">{sparepart.name}</CardTitle>
+                             </div>
+                         </CardHeader>
+                         <CardContent>
+                             <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg bg-muted/30 border border-border/50">
+                                 <Barcode className="h-4 w-4 shrink-0 opacity-70" />
+                                 <span className="font-mono text-xs">{sparepart.sku}</span>
+                             </div>
+                         </CardContent>
+                     </Card>
+                   </Link>
                ))}
                
                {spareparts.length === 0 && (
