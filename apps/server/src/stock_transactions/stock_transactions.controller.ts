@@ -185,20 +185,23 @@ export const handleStockOut = async (req: Request, res: Response) => {
         throw new Error("STOCK_NOT_FOUND");
       }
 
-      const currentStock = lockedStock[0] as any;
+      const currentStockRecord = lockedStock[0]!;
 
       // cancel if insufficient stock
-      if (currentStock.currentStock < quantity) {
+      if (currentStockRecord.currentStock < quantity) {
         throw new Error("INSUFFICIENT_STOCK");
       }
 
+      // update stock
+      const newStockValue = currentStockRecord.currentStock - quantity;
+      
       const updatedStock = await tx
         .update(warehouseStocks)
         .set({
-          currentStock: sql`${warehouseStocks.currentStock} - ${quantity}`,
+          currentStock: newStockValue,
           updatedAt: sql`NOW()`,
         })
-        .where(eq(warehouseStocks.id, currentStock.id))
+        .where(eq(warehouseStocks.id, currentStockRecord.id))
         .returning();
 
       const transaction = await tx
